@@ -1,0 +1,22 @@
+name: Daily Slack Report
+
+on:
+  schedule:
+    - cron: '30 6 * * *'   # daily once (IST approx 12:00 PM)
+  workflow_dispatch:
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Daily Report
+        run: |
+          PASSED=3
+          FAILED=1
+
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{
+            \"text\":\"📊 Daily Report\n✅ Passed: $PASSED\n❌ Failed: $FAILED\"
+          }" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
