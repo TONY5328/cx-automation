@@ -9,7 +9,6 @@ jobs:
 
     steps:
       - name: Simulate Test
-        id: test_step
         run: |
           echo "Running test..."
           exit 0   # change to 1 for fail
@@ -18,14 +17,16 @@ jobs:
         if: success()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"✅ GitHub Action Passed!"}' \
+          --data "{
+            \"text\":\"✅ Build Passed\n📦 Repo: ${{ github.repository }}\n🌿 Branch: ${{ github.ref_name }}\n👤 Triggered by: ${{ github.actor }}\"
+          }" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
-          
-    - name: Send Success Alert
-    if: success()
-  run: |
-    curl -X POST -H 'Content-type: application/json' \
-    --data "{
-      \"text\":\"✅ Build Passed\n📦 Repo: ${{ github.repository }}\n🌿 Branch: ${{ github.ref_name }}\n👤 Triggered by: ${{ github.actor }}\"
-    }" \
-    ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Failure Alert
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{
+            \"text\":\"❌ Build Failed\n📦 Repo: ${{ github.repository }}\n🌿 Branch: ${{ github.ref_name }}\n👤 Triggered by: ${{ github.actor }}\"
+          }" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
