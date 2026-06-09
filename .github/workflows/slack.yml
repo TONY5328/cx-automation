@@ -1,4 +1,4 @@
-name: Slack Alert Test
+name: Smart Slack Alert
 
 on:
   push:
@@ -8,10 +8,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Fail step (for testing)
-        run: exit 1
+      - name: Simulate Test
+        id: test_step
+        run: |
+          echo "Running test..."
+          exit 0   # change to 1 for fail
 
-      - name: Send Slack Alert
+      - name: Send Success Alert
+        if: success()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"✅ GitHub Action Passed!"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Failure Alert
         if: failure()
         run: |
           curl -X POST -H 'Content-type: application/json' \
