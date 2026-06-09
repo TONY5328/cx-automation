@@ -11,7 +11,7 @@ jobs:
       - name: Simulate Test
         run: |
           echo "Running test..."
-          exit 0   # change to 1 for fail
+          exit 1   # change to 0 for pass
 
       - name: Send Success Alert
         if: success()
@@ -22,11 +22,15 @@ jobs:
           }" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      - name: Send Failure Alert
+      - name: Send Failure Alert with Details
         if: failure()
         run: |
+          echo "Collecting error logs..."
+
+          ERROR_MSG="Build failed in step: Simulate Test"
+
           curl -X POST -H 'Content-type: application/json' \
           --data "{
-            \"text\":\"❌ Build Failed\n📦 Repo: ${{ github.repository }}\n🌿 Branch: ${{ github.ref_name }}\n👤 Triggered by: ${{ github.actor }}\"
+            \"text\":\"❌ Build Failed\n📦 Repo: ${{ github.repository }}\n🌿 Branch: ${{ github.ref_name }}\n👤 Triggered by: ${{ github.actor }}\n⚠️ Error: $ERROR_MSG\"
           }" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
