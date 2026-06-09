@@ -11,7 +11,7 @@ jobs:
       - name: Simulate Test
         run: |
           echo "Running test..."
-          exit 1   # change to 0 for pass
+         
 
       - name: Send Success Alert
         if: success()
