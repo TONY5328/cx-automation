@@ -2,7 +2,7 @@ name: Daily Slack Report
 
 on:
   schedule:
-    - cron: '30 6 * * *'   # daily once (IST approx 12:00 PM)
+    - cron: '30 6 * * *'
   workflow_dispatch:
 
 jobs:
@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Send Daily Report
         run: |
+          echo "Running daily report..."
+
           PASSED=3
           FAILED=1
 
