@@ -1,0 +1,19 @@
+name: Slack Alert Test
+
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fail step (for testing)
+        run: exit 1
+
+      - name: Send Slack Alert
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"❌ GitHub Action Failed!"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
